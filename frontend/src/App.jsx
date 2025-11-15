@@ -1,9 +1,10 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Login from './pages/login/Login'
-import Home from './pages/home/Home'
+import Home from './pages/Home/Home'
 import Landing from './pages/Landing/Landing'
 import SignUp from './pages/signup/SignUp'
+import PatientHomePage from './pages/Patient/Patient'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/patient" element={<PatientHomePage/>} />
         </Routes>
       </div>
     </BrowserRouter>
