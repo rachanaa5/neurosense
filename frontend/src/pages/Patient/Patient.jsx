@@ -6,9 +6,14 @@ import RightColumn from './components/RightColumn'
 import AppointmentsView from './components/AppointmentsView'
 import AnalyticsView from './components/AnalyticsView'
 import SettingsView from './components/SettingsView'
+import { usePatientReport } from '../../hooks/usePatientReport'
+
+// P001 is the patient wired to the physical wearable in backend/main.py.
+const PATIENT_ID = 'P001'
 
 export default function HealthcareDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard')
+  const { report, loading, error } = usePatientReport(PATIENT_ID)
   const [notifications, setNotifications] = useState({
     general: true,
     sound: true,
@@ -31,7 +36,7 @@ export default function HealthcareDashboard() {
       <main className="max-w-7xl mx-auto px-6 py-8">
         {activeTab === 'dashboard' && (
           <div className="grid md:grid-cols-3 gap-6">
-            <HealthMetrics />
+            <HealthMetrics report={report} loading={loading} error={error} />
             <RightColumn />
           </div>
         )}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { usePatients } from '../../hooks/usePatientReport'
 import DoctorHeader from './components/DoctorHeader'
 import PatientSidebar from './components/PatientSidebar'
 import NavigationTabs from './components/NavigationTabs'
@@ -7,16 +8,13 @@ import MedicalNotesView from './components/MedicalNotesView'
 import ScheduleChangesView from './components/ScheduleChangesView'
 
 export default function Home() {
-  const [selectedPatient, setSelectedPatient] = useState(1)
+  const [pickedPatient, setSelectedPatient] = useState(null)
   const [activeTab, setActiveTab] = useState('notes') // Default to Medical Notes
+  const { patients, loading, error } = usePatients()
 
-  const patients = [
-    { id: 1, name: 'Patient 1' },
-    { id: 2, name: 'Patient 2' },
-    { id: 3, name: 'Patient 3' },
-    { id: 4, name: 'Patient 4' },
-    { id: 5, name: 'Patient 5' },
-  ]
+  // Derived rather than set in an effect: until the user picks someone, the
+  // selection is simply the first patient in the roster.
+  const selectedPatient = pickedPatient ?? patients[0]?.id ?? null
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50">
@@ -30,11 +28,18 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Sidebar - Patient List */}
             <div className="lg:col-span-3">
-              <PatientSidebar
-                patients={patients}
-                selectedPatient={selectedPatient}
-                setSelectedPatient={setSelectedPatient}
-              />
+              {error ? (
+                <div className="bg-white rounded-3xl p-5 shadow-lg border border-red-200">
+                  <p className="font-semibold text-red-700">Cannot load patients</p>
+                  <p className="text-sm text-slate-600 mt-1">{error}</p>
+                </div>
+              ) : (
+                <PatientSidebar
+                  patients={loading ? [] : patients}
+                  selectedPatient={selectedPatient}
+                  setSelectedPatient={setSelectedPatient}
+                />
+              )}
             </div>
 
             {/* Main Content */}

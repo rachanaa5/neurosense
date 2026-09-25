@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Brain, Mail, Lock, ArrowRight } from 'lucide-react'
+import { login as apiLogin } from '../../lib/api'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -25,7 +26,7 @@ const Login = () => {
     // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required'
-    } else if (formData.password.length < 6 && formData.password !== 'user#1234') {
+    } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters'
     }
     
@@ -66,19 +67,15 @@ const Login = () => {
     setLoginError('') // Clear previous login errors
     
     try {
-      // Check for specific credentials
-      if (formData.email === 'user@gmail.com' && formData.password === 'user#1234') {
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        // Navigate to home page on successful login
-        navigate('/home')
-      } else {
-        // Show error for invalid credentials
-        setLoginError('Invalid email or password. Please try again.')
-      }
+      const { user } = await apiLogin(formData.email, formData.password)
+      // Doctors get the multi-patient view, everyone else their own dashboard.
+      navigate(user.role === 'doctor' ? '/home' : '/patient')
     } catch (error) {
-      console.error('Login failed:', error)
-      setLoginError('Login failed. Please try again.')
+      setLoginError(
+        error.status === 401
+          ? 'Invalid email or password. Please try again.'
+          : error.message
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -135,7 +132,7 @@ const Login = () => {
                     } bg-white text-slate-900 placeholder-slate-400 
                     rounded-xl focus:outline-none focus:ring-2 focus:ring-opacity-50 sm:text-sm
                     transition-all duration-200`}
-                    placeholder="user@gmail.com"
+                    placeholder="doctor@neurosense.com"
                   />
                 </div>
                 {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email}</p>}
@@ -161,7 +158,7 @@ const Login = () => {
                     } bg-white text-slate-900 placeholder-slate-400 
                     rounded-xl focus:outline-none focus:ring-2 focus:ring-opacity-50 sm:text-sm
                     transition-all duration-200`}
-                    placeholder="user#1234"
+                    placeholder="Enter your password"
                   />
                 </div>
                 {errors.password && <p className="mt-2 text-sm text-red-600">{errors.password}</p>}
