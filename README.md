@@ -175,14 +175,3 @@ the device will send at inference time.
   (0.02 g RMS) and the gait score mapping are reasoned starting points, not
   values fitted against labelled recordings.
 
-## Team
-
-| Name | USN |
-|---|---|
-| Adithi | 4MW22EC001 |
-| Harshitha Ramachandra Naik | 4MW22EC033 |
-| Manasa | 4MW22EC045 |
-| Rachanaa M | 4MW22EC057 |
-
-Under the guidance of Mr. Sachin Prabhu K, Assistant Professor (S.G.),
-Dept. of Electronics & Communication Engineering.
